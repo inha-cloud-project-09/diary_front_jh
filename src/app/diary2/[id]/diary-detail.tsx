@@ -237,19 +237,14 @@ export default function Component() {
 
       {/* Banner Images */}
       <div className="relative">
-        <div className="aspect-[16/9] sm:aspect-[21/9] overflow-hidden">
-          <div className="grid grid-cols-2 h-full">
-            {diaryData.bannerImages.map((image, index) => (
-              <div key={index} className="relative overflow-hidden">
-                <img
-                  src={image || "/placeholder.svg"}
-                  alt={`배너 이미지 ${index + 1}`}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="relative w-screen h-[400px] overflow-hidden">
+  <img
+    src={diaryData.bannerImages[0] || "/placeholder.svg"}
+    alt="배너 이미지"
+    className="w-full h-full object-cover scale-110"
+  />
+  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+</div>
 
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />

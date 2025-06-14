@@ -67,7 +67,7 @@ interface RoutineStats {
   overall_completion_rate: number
 }
 
-const API_BASE = "http://3.236.68.128:8000"
+const API_BASE = "https://backend.withudiary.my"
 
 export default function RoutineDashboard() {
   // States
