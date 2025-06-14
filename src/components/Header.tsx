@@ -103,7 +103,7 @@ export default function Header({ showBackButton = false, showMoreButton = false,
                 onClick={() => router.push("/ai_routine")}
                 className={cn(
                   "flex items-center space-x-2",
-                  isActive("/my-diary") ? "text-blue-600" : "text-slate-600 hover:text-slate-900"
+                  isActive("/ai_routine") ? "text-blue-600" : "text-slate-600 hover:text-slate-900"
                 )}
               >
                 <BookOpen className="h-5 w-5" />

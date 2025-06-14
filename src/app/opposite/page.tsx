@@ -21,10 +21,12 @@ import {
   Menu,
   X,
   LogIn,
-  BookOpen
+  BookOpen,
+  ExternalLink
 } from 'lucide-react'
 
-const mylink = "https://withudiary.my"
+const mylink = "http://localhost:8080" //https://withudiary.my
+
 // API 호출 함수들
 const authAPI = {
   getCurrentUser: async () => {
@@ -193,72 +195,90 @@ export default function EmotionRecommendationPage() {
     }
   }
 
-  // 일기 카드 컴포넌트
+  // 일기 카드 컴포넌트 (클릭 시 상세 페이지로 이동)
   const DiaryCard = ({ diary, type }) => {
     const userInfo = getUserInfoFromId(diary.user_id)
     const emoji = getEmotionEmoji(diary.summary)
     const isOpposite = type === 'opposite'
     
     return (
-      <div className={`bg-white rounded-xl p-6 shadow-sm border-2 transition-all duration-300 hover:shadow-lg ${
-        isOpposite 
-          ? 'border-purple-200 hover:border-purple-300' 
-          : 'border-blue-200 hover:border-blue-300'
-      }`}>
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-slate-200 rounded-full overflow-hidden">
-              <img
-                src={userInfo.profileImage}
-                alt={userInfo.nickname}
-                className="w-full h-full object-cover"
-              />
+      <Link 
+        href={`/diary2/${diary.diary_id}`}
+        className="block group"
+      >
+        <div className={`bg-white rounded-xl p-6 shadow-sm border-2 transition-all duration-300 hover:shadow-lg group-hover:scale-[1.02] cursor-pointer ${
+          isOpposite 
+            ? 'border-purple-200 hover:border-purple-300 group-hover:bg-purple-50/30' 
+            : 'border-blue-200 hover:border-blue-300 group-hover:bg-blue-50/30'
+        }`}>
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-slate-200 rounded-full overflow-hidden">
+                <img
+                  src={userInfo.profileImage}
+                  alt={userInfo.nickname}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <p className="font-semibold text-slate-900 group-hover:text-slate-800 transition-colors">
+                  {userInfo.nickname}
+                </p>
+                <p className="text-sm text-slate-500">
+                  {new Date(diary.created_at).toLocaleDateString('ko-KR', {
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="font-semibold text-slate-900">{userInfo.nickname}</p>
-              <p className="text-sm text-slate-500">
-                {new Date(diary.created_at).toLocaleDateString('ko-KR', {
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
-              </p>
+            <div className="flex items-center space-x-2">
+              <span className="text-2xl">{emoji}</span>
+              {isOpposite ? (
+                <TrendingDown className="w-5 h-5 text-purple-500" />
+              ) : (
+                <TrendingUp className="w-5 h-5 text-blue-500" />
+              )}
+              <ExternalLink className={`w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity ${
+                isOpposite ? 'text-purple-400' : 'text-blue-400'
+              }`} />
             </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-2xl">{emoji}</span>
-            {isOpposite ? (
-              <TrendingDown className="w-5 h-5 text-purple-500" />
-            ) : (
-              <TrendingUp className="w-5 h-5 text-blue-500" />
-            )}
-          </div>
-        </div>
-        
-        <p className="text-slate-700 leading-relaxed mb-4">{diary.summary}</p>
-        
-        <div className="flex items-center justify-between">
-          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-            isOpposite 
-              ? 'bg-purple-50 text-purple-700' 
-              : 'bg-blue-50 text-blue-700'
-          }`}>
-            {isOpposite ? '반대 감정' : '유사 감정'}
-          </span>
           
-          <div className="flex items-center space-x-4 text-sm text-slate-500">
-            <button className="flex items-center space-x-1 hover:text-red-500 transition-colors">
-              <Heart className="w-4 h-4" />
-              <span>{Math.floor(Math.random() * 15) + 1}</span>
-            </button>
-            <button className="flex items-center space-x-1 hover:text-blue-500 transition-colors">
-              <MessageCircle className="w-4 h-4" />
-              <span>{Math.floor(Math.random() * 8) + 1}</span>
-            </button>
+          <p className="text-slate-700 leading-relaxed mb-4 group-hover:text-slate-600 transition-colors">
+            {diary.summary}
+          </p>
+          
+          <div className="flex items-center justify-between">
+            <span className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+              isOpposite 
+                ? 'bg-purple-50 text-purple-700 group-hover:bg-purple-100' 
+                : 'bg-blue-50 text-blue-700 group-hover:bg-blue-100'
+            }`}>
+              {isOpposite ? '반대 감정' : '유사 감정'}
+            </span>
+            
+            <div className="flex items-center space-x-4 text-sm text-slate-500">
+              <button 
+                className="flex items-center space-x-1 hover:text-red-500 transition-colors"
+                onClick={(e) => e.preventDefault()} // 카드 링크와 분리
+              >
+                <Heart className="w-4 h-4" />
+                <span>{Math.floor(Math.random() * 15) + 1}</span>
+              </button>
+              <button 
+                className="flex items-center space-x-1 hover:text-blue-500 transition-colors"
+                onClick={(e) => e.preventDefault()} // 카드 링크와 분리
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>{Math.floor(Math.random() * 8) + 1}</span>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
     )
   }
 
@@ -383,7 +403,7 @@ export default function EmotionRecommendationPage() {
                     <TrendingDown className="w-6 h-6 mr-3 text-purple-600" />
                     반대 감정의 일기
                   </h2>
-                  <p className="text-slate-600 mt-1">다른 시각으로 바라보는 경험들</p>
+                  <p className="text-slate-600 mt-1">다른 시각으로 바라보는 경험들 (클릭하여 자세히 보기)</p>
                 </div>
                 <div className="bg-purple-50 px-4 py-2 rounded-full">
                   <span className="text-purple-700 font-medium">
@@ -411,7 +431,7 @@ export default function EmotionRecommendationPage() {
                     <TrendingUp className="w-6 h-6 mr-3 text-blue-600" />
                     유사 감정의 일기
                   </h2>
-                  <p className="text-slate-600 mt-1">공감할 수 있는 비슷한 경험들</p>
+                  <p className="text-slate-600 mt-1">공감할 수 있는 비슷한 경험들 (클릭하여 자세히 보기)</p>
                 </div>
                 <div className="bg-blue-50 px-4 py-2 rounded-full">
                   <span className="text-blue-700 font-medium">
