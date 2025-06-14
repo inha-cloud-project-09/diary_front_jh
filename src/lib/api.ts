@@ -111,6 +111,13 @@ export const communityAPI = {
     return response.data
   },
 
+  getCommunityDiaries: async (id: number, limit?: number): Promise<ApiResponse<Diary[]>> => {
+    const response = await api.get<ApiResponse<Diary[]>>(`/communities/${id}/diaries`, {
+      params: limit ? { limit } : {}
+    })
+    return response.data
+  },
+
   joinCommunity: async (id: number, data: JoinCommunityRequest): Promise<ApiResponse<void>> => {
     const response = await api.post<ApiResponse<void>>(`/communities/${id}/join`, data)
     return response.data
@@ -126,7 +133,7 @@ export const communityAPI = {
 export const authAPI = {
   // 구글 로그인 리다이렉트
   googleLogin: () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+    window.location.href = `https://withudiary.my/api/auth/google`;
   },
 
   // 현재 로그인된 사용자 정보 조회

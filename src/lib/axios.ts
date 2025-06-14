@@ -1,27 +1,38 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || '/api',
+  baseURL: 'http://localhost:8080/api' || '/api',
   withCredentials: true,
-  timeout: 10000,
+  timeout: 100000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
+
+
 // Token management utilities
+// Token management utilities
+//필수수정
 const getToken = () => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('token');
+    const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
+      const [key, value] = cookie.split('=');
+      acc[key] = value;
+      return acc;
+    }, {} as Record<string, string>);
+    return cookies['auth-token'] || null;
   }
   return null;
 };
 
+
 const removeToken = () => {
   if (typeof window !== 'undefined') {
-    localStorage.removeItem('token');
+    document.cookie = 'auth-token=; Max-Age=0; path=/';
   }
 };
+
 
 // 요청 시간 추적을 위한 Map (TypeScript 친화적)
 const requestTimings = new Map<string, number>();
@@ -109,4 +120,4 @@ api.interceptors.response.use(
   }
 );
 
-export default api;
+export default api;  
