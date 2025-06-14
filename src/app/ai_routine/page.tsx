@@ -22,6 +22,8 @@ import {
   AlertCircle
 } from "lucide-react"
 
+import Header from "@/components/Header"
+
 interface DiaryEntry {
   id: string | number
   title?: string
@@ -563,6 +565,7 @@ export default function DiaryViewer() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <Header />
       {/* Loading Overlay */}
       {isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -592,6 +595,13 @@ export default function DiaryViewer() {
               <h1 className="text-xl font-bold text-gray-800">📖 WithU Diary</h1>
             </div>
             <div className="flex items-center space-x-3">
+            <button
+                onClick={() => location.href='/ai_routine/viewer'}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+              >
+                <Calendar className="w-5 h-5" />
+                <span>나의 캘린더</span>
+              </button>
               <button
                 onClick={handleLoadDiaries}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
