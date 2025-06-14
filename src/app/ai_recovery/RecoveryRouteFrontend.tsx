@@ -6,9 +6,9 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceL
 import Header from "@/components/Header"
 import { Calendar, TrendingUp, Heart, Lightbulb, RefreshCw, Filter, ChevronDown, ChevronUp } from "lucide-react"
 
-const API_BASE = "http://3.236.68.128:8000"
+const API_BASE = "https://backend.withudiary.my"
 
-// 타입 정의
+// 타입 정의localhost
 interface EmotionTimelinePoint {
   date: string
   primary_emotion: string

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
 
-const API_BASE = "http://3.236.68.128:8000"
+const API_BASE = "https://backend.withudiary.my"
 // Button 컴포넌트를 인라인으로 정의
 const Button = ({ children, variant = "default", size = "md", className = "", onClick, ...props }) => {
   const baseClasses = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"

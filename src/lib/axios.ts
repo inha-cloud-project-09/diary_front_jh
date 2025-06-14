@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api' || '/api',
+  baseURL: 'https://withudiary.my/api' || '/api',
   withCredentials: true,
   timeout: 100000,
   headers: {

@@ -40,7 +40,7 @@ import { mockCommunities } from "@/mock/community"
 import { toast } from "sonner"
 
 
-const mylink = "http://localhost:8080"
+const mylink = "https://withudiary.my" //http://localhost:8080
 // 클러스터 API 함수
 const clusterAPI = {
   // 사용자의 현재 클러스터 조회

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
+
+const APIURL = "https://withudiary.my"
 // Button 컴포넌트를 인라인으로 정의
 const Button = ({ children, variant = "default", size = "md", className = "", onClick, ...props }) => {
   const baseClasses = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
@@ -74,6 +76,8 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('ko-KR', options)
 }
 
+
+
 export default function Component() {
   const params = useParams()
   const diaryId = params.id // URL에서 일기 ID 가져오기
@@ -95,7 +99,7 @@ export default function Component() {
     try {
       setLoading(true)
       console.log('조회할 일기 ID:', diaryId) // 디버깅용
-      const response = await fetch(`http://localhost:8080/api/diaries/${diaryId}`, {
+      const response = await fetch(`${APIURL}/api/diaries/${diaryId}`, {
         method: 'GET',
         credentials: 'include',
         headers: {

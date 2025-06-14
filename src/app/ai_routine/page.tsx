@@ -53,7 +53,7 @@ interface ApiResponse {
   message?: string
 }
 
-const API_BASE = 'http://3.236.68.128:8000'
+const API_BASE = 'https://backend.withudiary.my'
 
 export default function DiaryViewer() {
   // State management

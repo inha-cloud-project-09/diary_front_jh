@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react"
 import Header from "@/components/Header"
+
+const APIURL = "https://withudiary.my"
 // Button 컴포넌트를 인라인으로 정의
 const Button = ({ children, variant = "default", size = "md", className = "", onClick, ...props }) => {
   const baseClasses = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
@@ -92,7 +94,7 @@ export default function MyDiaryPage() {
   const fetchCurrentUser = async () => {
     try {
       setIsUserLoading(true)
-      const response = await fetch('http://localhost:8080/api/auth/me', {
+      const response = await fetch(APIURL+'/api/auth/me', {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -124,7 +126,7 @@ export default function MyDiaryPage() {
   const fetchMyDiaries = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch('http://localhost:8080/api/diaries/my', {
+      const response = await fetch(APIURL+'/api/diaries/my', {
         method: 'GET',
         credentials: 'include',
         headers: {

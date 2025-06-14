@@ -25,7 +25,7 @@ import {
   ExternalLink
 } from 'lucide-react'
 
-const mylink = "http://localhost:8080" //https://withudiary.my
+const mylink = "https://withudiary.my" //https://withudiary.my
 
 // API 호출 함수들
 const authAPI = {
