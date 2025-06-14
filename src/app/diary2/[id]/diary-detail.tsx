@@ -236,7 +236,7 @@ export default function Component() {
       </header>
 
       {/* Banner Images */}
-      <div className="relative">
+            <div className="relative">
       <div className="relative w-screen h-[400px] overflow-hidden">
   <img
     src={diaryData.bannerImages[0] || "/placeholder.svg"}

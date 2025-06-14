@@ -70,6 +70,16 @@ export default function Header({ showBackButton = false, showMoreButton = false,
                 <span className="font-medium hidden sm:inline">홈</span>
               </button>
               <button
+                onClick={() => router.push("/weather")}
+                className={cn(
+                  "flex items-center space-x-2",
+                  isActive("/weather") ? "text-blue-600" : "text-slate-600 hover:text-slate-900"
+                )}
+              >
+                <BookOpen className="h-5 w-5" />
+                <span className="font-medium hidden sm:inline">날씨포유</span>
+              </button>
+              <button
                 onClick={() => router.push("/my-diary")}
                 className={cn(
                   "flex items-center space-x-2",
