@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Header from "@/components/Header"
 import { 
   Heart, 
   MessageCircle, 
@@ -44,125 +45,7 @@ const authAPI = {
   }
 }
 
-// 네비게이션 헤더 컴포넌트
-const Header = ({ currentUser }) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  const menuItems = [
-    { href: '/dashboard', icon: Home, label: '홈', active: false },
-    { href: '/write', icon: Plus, label: '일기 작성', active: false },
-    { href: '/communities', icon: Users, label: '나눔방', active: false },
-    { href: '/emotion-recommendation', icon: Compass, label: '감정 탐험', active: true },
-  ]
-
-  return (
-    <header className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* 로고 */}
-          <div className="flex items-center">
-            <Link href="/dashboard" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold text-slate-900 hidden sm:block">감정일기</span>
-            </Link>
-          </div>
-
-          {/* 데스크톱 네비게이션 */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {menuItems.map((item) => {
-              const Icon = item.icon
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    item.active
-                      ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
-                </Link>
-              )
-            })}
-          </nav>
-
-          {/* 사용자 정보 및 알림 */}
-          <div className="flex items-center space-x-4">
-            {/* 알림 버튼 */}
-            <button className="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors">
-              <Bell className="w-5 h-5" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-            </button>
-
-            {/* 사용자 프로필 */}
-            {currentUser ? (
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-slate-200 rounded-full overflow-hidden">
-                  <img
-                    src={`https://www.gravatar.com/avatar/${currentUser.id}?d=identicon`}
-                    alt={currentUser.nickname || currentUser.email}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="hidden sm:block">
-                  <p className="text-sm font-medium text-slate-900">
-                    {currentUser.nickname || currentUser.email || `사용자 ${currentUser.id}`}
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <Link
-                href="/login"
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
-              >
-                <LogIn className="w-4 h-4" />
-                <span>로그인</span>
-              </Link>
-            )}
-
-            {/* 모바일 메뉴 버튼 */}
-            <button
-              className="md:hidden p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-
-        {/* 모바일 메뉴 */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-200 py-4">
-            <nav className="flex flex-col space-y-2">
-              {menuItems.map((item) => {
-                const Icon = item.icon
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                      item.active
-                        ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span>{item.label}</span>
-                  </Link>
-                )
-              })}
-            </nav>
-          </div>
-        )}
-      </div>
-    </header>
-  )
-}
 
 // 사용자 정보 매핑 함수 (기존과 동일)
 const getUserInfoFromId = (userId) => {
@@ -382,7 +265,7 @@ export default function EmotionRecommendationPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* 네비게이션 헤더 */}
-      <Header currentUser={currentUser} />
+      <Header/>
 
       {/* 페이지 헤더 */}
       <div className="bg-white shadow-sm border-b border-slate-200">

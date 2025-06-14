@@ -1,7 +1,33 @@
 "use client"
 
-import { useState } from "react"
-import { Button } from "../../components/ui/button"
+import { useState, useEffect } from "react"
+import { useParams } from "next/navigation"
+// Button 컴포넌트를 인라인으로 정의
+const Button = ({ children, variant = "default", size = "md", className = "", onClick, ...props }) => {
+  const baseClasses = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+  
+  const variants = {
+    default: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
+    ghost: "bg-transparent text-slate-600 hover:bg-slate-100 focus:ring-slate-500",
+    outline: "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus:ring-slate-500"
+  }
+  
+  const sizes = {
+    sm: "px-3 py-1.5 text-sm",
+    md: "px-4 py-2 text-sm",
+    lg: "px-6 py-3 text-base"
+  }
+  
+  return (
+    <button
+      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
+      onClick={onClick}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+}
 import {
   ArrowLeft,
   Heart,
@@ -15,44 +41,163 @@ import {
   MapPin,
   Tag,
   User,
+  Loader2,
 } from "lucide-react"
 
+// 감정을 이모지로 매핑하는 함수
+const getEmotionEmoji = (emotion) => {
+  const emotionMap = {
+    "기쁨": "😊",
+    "행복": "😄", 
+    "슬픔": "😢",
+    "화남": "😠",
+    "불안": "😰",
+    "평온": "😌",
+    "기대": "😊",
+    "감사": "🙏",
+    "사랑": "❤️",
+    "외로움": "😔"
+  }
+  return emotionMap[emotion] || "😊"
+}
+
+// 날짜 포맷팅 함수
+const formatDate = (dateString) => {
+  const date = new Date(dateString)
+  const options = { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }
+  return date.toLocaleDateString('ko-KR', options)
+}
+
 export default function Component() {
+  const params = useParams()
+  const diaryId = params.id // URL에서 일기 ID 가져오기
+  
   const [isLiked, setIsLiked] = useState(false)
   const [isBookmarked, setIsBookmarked] = useState(false)
-  const [likeCount, setLikeCount] = useState(17)
+  const [likeCount, setLikeCount] = useState(0)
+  const [diaryData, setDiaryData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   const handleLike = () => {
     setIsLiked(!isLiked)
     setLikeCount(isLiked ? likeCount - 1 : likeCount + 1)
   }
 
-  const diaryData = {
-    id: "250324",
-    title: "오늘의 소중한 8일차",
-    author: {
-      name: "최정혁",
-      avatar: "/basic.jpeg?height=40&width=40",
-    },
-    date: "March 24, 2025 PM 20:39",
-    location: "서울시 강남구",
-    mood: "😊",
-    tags: ["기쁨", "여행", "운동", "낙망", "감사"],
-    bannerImages: ["/basic.jpeg", "/basic2.jpeg?height=400&width=600"],
-    content: `어느덧 소위지은 8일차에 도달했습니다.
-이제 이집 쉐이크, 점심 식단, 간식 쉐이크, 저녁 탄수화물 제한식의 코스입니다.
+  // API에서 일기 데이터 가져오기
+  const fetchDiaryData = async () => {
+    try {
+      setLoading(true)
+      console.log('조회할 일기 ID:', diaryId) // 디버깅용
+      const response = await fetch(`http://localhost:8080/api/diaries/${diaryId}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth-token') || ''}`
+        }
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      console.log('API 응답:', result) // 디버깅용
+      
+      if (result.success && result.data) {
+        const apiData = result.data
+        console.log('API 데이터:', apiData) // 디버깅용
+        
+        // API 데이터를 컴포넌트 형식으로 변환
+        const transformedData = {
+          id: apiData.id,
+          title: apiData.summary || "일기",
+          author: {
+            name: apiData.userName || "익명",
+            avatar: "/basic.jpeg?height=40&width=40",
+          },
+          date: formatDate(apiData.createdAt),
+          location: "위치 정보 없음", // API에 위치 정보가 없음
+          mood: getEmotionEmoji(apiData.primaryEmotion),
+          tags: apiData.tags || [],
+          bannerImages: apiData.imageUrl ? [apiData.imageUrl, apiData.imageUrl] : ["/basic.jpeg", "/basic2.jpeg?height=400&width=600"],
+          content: apiData.content || "",
+          additionalImages: apiData.imageUrl ? [apiData.imageUrl] : ["/basic3.jpeg?height=300&width=400", "/basic4.jpeg?height=300&width=400"],
+          feedback: apiData.feedback,
+          primaryEmotion: apiData.primaryEmotion,
+          stats: {
+            likes: Math.floor(Math.random() * 50) + 1, // API에 없으므로 랜덤 값
+            comments: Math.floor(Math.random() * 10) + 1,
+            views: Math.floor(Math.random() * 200) + 50,
+          },
+        }
+        
+        console.log('변환된 데이터:', transformedData) // 디버깅용
+        setDiaryData(transformedData)
+        setLikeCount(transformedData.stats.likes)
+      } else {
+        throw new Error(result.message || "데이터를 가져오는데 실패했습니다.")
+      }
+    } catch (err) {
+      setError(err.message)
+      console.error("일기 데이터 조회 실패:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-3일째 정체기가 찾아왔습니다. 6일에 5.5키로 빠졌는데, 그럼만도 합니다.
+  useEffect(() => {
+    if (diaryId) { // diaryId가 있을 때만 fetch
+      fetchDiaryData()
+    }
+  }, [diaryId])
 
-오늘은 운동 강도를 조금 더 높였습니다. 근력 운동과 추가적으로 30분 인터벌로 12km/h까지 올렸습니다. 점심 빠지기는 모양새라 기분이 좋습니다.
+  // 로딩 상태 (diaryId가 없거나 데이터 로딩 중)
+  if (loading || !diaryId) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+          <p className="text-slate-600">일기를 불러오는 중...</p>
+        </div>
+      </div>
+    )
+  }
 
-요리도 먹을 수 있는 것들 중 제한하여 소량 요리합니다.`,
-    additionalImages: ["/basic3.jpeg?height=300&width=400", "/basic4.jpeg?height=300&width=400"],
-    stats: {
-      likes: likeCount,
-      comments: 3,
-      views: 124,
-    },
+  // 에러 상태
+  if (error) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="max-w-md p-6 bg-white rounded-lg shadow-sm border border-red-200">
+          <div className="text-center">
+            <div className="text-red-500 text-xl mb-2">⚠️</div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-2">오류가 발생했습니다</h3>
+            <p className="text-slate-600 mb-4">{error}</p>
+            <Button onClick={fetchDiaryData} className="bg-blue-600 hover:bg-blue-700">
+              다시 시도
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // 데이터가 없는 경우
+  if (!diaryData) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-slate-600">일기를 찾을 수 없습니다.</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -139,7 +284,7 @@ export default function Component() {
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-lg">{diaryData.mood}</span>
-                <span>좋은 하루</span>
+                <span>{diaryData.primaryEmotion}</span>
               </div>
             </div>
 
@@ -166,6 +311,14 @@ export default function Component() {
                 </p>
               ))}
             </div>
+
+            {/* AI Feedback */}
+            {diaryData.feedback && (
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h4 className="font-semibold text-blue-900 mb-2">💡 AI 피드백</h4>
+                <p className="text-blue-800 text-sm">{diaryData.feedback}</p>
+              </div>
+            )}
 
             {/* Additional Images */}
             {diaryData.additionalImages.length > 0 && (
@@ -196,7 +349,7 @@ export default function Component() {
                   }`}
                 >
                   <Heart className="w-5 h-5" fill={isLiked ? "currentColor" : "none"} />
-                  <span className="font-medium">{diaryData.stats.likes}</span>
+                  <span className="font-medium">{likeCount}</span>
                 </button>
                 <button className="flex items-center space-x-2 text-slate-600 hover:text-blue-500 transition-colors">
                   <MessageCircle className="w-5 h-5" />
@@ -260,7 +413,7 @@ export default function Component() {
                     <span className="text-xs text-slate-500">2시간 전</span>
                   </div>
                   <p className="text-slate-700">
-                    정말 대단하세요! 꾸준히 하시는 모습이 인상적입니다. 저도 동기부여가 되네요 💪
+                    정말 의미깊은 하루를 보내신 것 같네요! 새해 첫날의 감정들이 잘 표현되어 있어요 ✨
                   </p>
                 </div>
                 <div className="flex items-center space-x-4 mt-2 text-sm text-slate-500">
@@ -280,7 +433,7 @@ export default function Component() {
                     <span className="font-medium text-slate-900">이지은</span>
                     <span className="text-xs text-slate-500">1시간 전</span>
                   </div>
-                  <p className="text-slate-700">음식 사진이 너무 맛있어 보여요! 레시피 공유해주실 수 있나요? 😋</p>
+                  <p className="text-slate-700">새해 계획 세우실 때 작은 것부터 시작하시는 게 좋다는 피드백이 정말 도움이 될 것 같아요! 🎯</p>
                 </div>
                 <div className="flex items-center space-x-4 mt-2 text-sm text-slate-500">
                   <button className="hover:text-red-500 transition-colors">좋아요</button>

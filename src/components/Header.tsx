@@ -80,6 +80,36 @@ export default function Header({ showBackButton = false, showMoreButton = false,
                 <span className="font-medium hidden sm:inline">내 일기</span>
               </button>
               <button
+                onClick={() => router.push("/opposite")}
+                className={cn(
+                  "flex items-center space-x-2",
+                  isActive("/my-diary") ? "text-blue-600" : "text-slate-600 hover:text-slate-900"
+                )}
+              >
+                <BookOpen className="h-5 w-5" />
+                <span className="font-medium hidden sm:inline">아는 사람 얘기해줄게</span>
+              </button>
+              <button
+                onClick={() => router.push("/ai_recovery")}
+                className={cn(
+                  "flex items-center space-x-2",
+                  isActive("/my-diary") ? "text-blue-600" : "text-slate-600 hover:text-slate-900"
+                )}
+              >
+                <BookOpen className="h-5 w-5" />
+                <span className="font-medium hidden sm:inline">나를 돌아볼게</span>
+              </button>
+              <button
+                onClick={() => router.push("/ai_routine")}
+                className={cn(
+                  "flex items-center space-x-2",
+                  isActive("/my-diary") ? "text-blue-600" : "text-slate-600 hover:text-slate-900"
+                )}
+              >
+                <BookOpen className="h-5 w-5" />
+                <span className="font-medium hidden sm:inline">루틴</span>
+              </button>
+              <button
                 onClick={() => router.push("/communities")}
                 className={cn(
                   "flex items-center space-x-2",
