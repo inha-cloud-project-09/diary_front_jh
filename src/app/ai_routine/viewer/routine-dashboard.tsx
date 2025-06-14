@@ -27,6 +27,7 @@ import {
   AlertTriangle,
   Info,
 } from "lucide-react"
+import Header from "@/components/Header"
 
 interface RoutineDB {
   id: number
@@ -409,6 +410,7 @@ export default function RoutineDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-sky-100 text-gray-800">
+      <Header />
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-50 shadow-sm">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
