@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "../components/ui/button"
 import { useUser } from "@/lib/context/UserContext"
+import Link from "next/link"  
 import {
   X,
   Users,
@@ -40,7 +41,7 @@ import { mockCommunities } from "@/mock/community"
 import { toast } from "sonner"
 
 
-const mylink = "https://withudiary.my" //http://localhost:8080
+const mylink = "http://localhost:8080" //https://withudiary.my
 // 클러스터 API 함수
 const clusterAPI = {
   // 사용자의 현재 클러스터 조회
@@ -743,13 +744,12 @@ const fetchUserCluster = async () => {
                         </div>
                       </div>
                       <div className="flex space-x-2">
-                        <Button 
-                          onClick={() => handleViewCommunityDiaries(community)}
-                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                        >
-                          <Eye className="w-4 h-4 mr-2" />
-                          일기 보기
-                        </Button>
+                        <Link href={`/community/${community.id}`}>
+                          <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
+                            <Eye className="w-4 h-4 mr-2" />
+                            커뮤니티 입장
+                          </Button>
+                        </Link>
                         <Button 
                           variant="outline" 
                           size="sm"
