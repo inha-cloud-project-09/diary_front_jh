@@ -14,7 +14,7 @@ import {
 } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 
-const mylink = "http://localhost:8080"
+const mylink = "https://withudiary.my" //http://localhost:8080
 
 // 실제 API 호출 함수들 (나눔방 페이지에서 가져옴)
 const communityAPIReal = {

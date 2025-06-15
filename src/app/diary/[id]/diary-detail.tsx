@@ -314,6 +314,23 @@ export default function Component() {
                   </>
                 )}
               </Button>
+              {/* ✅ 새로 추가: AI 어시스턴트 버튼 */}
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                onClick={() => window.location.href = `/ai_assistant/${diaryId}`}
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                AI 대화
+              </Button>
+              
+              <Button variant="ghost" size="sm" className="p-2">
+                <Share2 className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="p-2">
+                <MoreHorizontal className="w-5 h-5" />
+              </Button>
               <Button variant="ghost" size="sm" className="p-2">
                 <Share2 className="w-5 h-5" />
               </Button>
@@ -448,6 +465,16 @@ export default function Component() {
               </div>
 
               <div className="flex items-center space-x-2">
+                {/* ✅ 새로 추가: AI 어시스턴트 버튼 */}
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-green-600 border-green-200 hover:bg-green-50"
+                  onClick={() => window.location.href = `/ai_assistant/${diaryId}`}
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  AI와 대화
+                </Button>
                 <Button variant="outline" size="sm" className="text-blue-600 border-blue-200 hover:bg-blue-50">
                   <Edit className="w-4 h-4 mr-2" />
                   Edit
