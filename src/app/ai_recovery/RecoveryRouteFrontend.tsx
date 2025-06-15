@@ -1,3 +1,4 @@
+
 "use client"
 
 import type React from "react"
@@ -144,19 +145,26 @@ const RecoveryRouteFrontend: React.FC = () => {
       희망: "#c026d3",
       활력: "#e11d48",
       행복: "#10b981",
+      슬픔: "#64748b",
+      지루함: "#9ca3af",
+      실망: "#6b7280",
+      설렘: "#f97316",
+      분노: "#ef4444",
+      외로움: "#475569",
+      기대: "#3b82f6",
     }
     return colors[emotion] || "#6b7280"
   }
 
   // 감정 점수 변환 (차트용)
   const convertToScore = (emotion: string): number => {
-    const negativeEmotions = ["우울", "무기력", "불안", "스트레스", "피로", "걱정"]
-    const positiveEmotions = ["평온", "만족", "기쁨", "희망", "활력", "행복"]
+    const negativeEmotions = ["우울", "무기력", "불안", "스트레스", "피로", "걱정", "슬픔", "지루함", "실망", "분노", "외로움"]
+    const positiveEmotions = ["평온", "만족", "기쁨", "희망", "활력", "행복", "설렘", "기대"]
 
     if (negativeEmotions.includes(emotion)) {
-      return negativeEmotions.indexOf(emotion) * -1 - 1 // -1 to -6
+      return negativeEmotions.indexOf(emotion) * -1 - 1 // -1 to -11
     } else if (positiveEmotions.includes(emotion)) {
-      return positiveEmotions.indexOf(emotion) + 1 // 1 to 6
+      return positiveEmotions.indexOf(emotion) + 1 // 1 to 8
     }
     return 0
   }
@@ -366,7 +374,7 @@ const RecoveryRouteFrontend: React.FC = () => {
                     tickLine={{ stroke: "#e2e8f0" }}
                   />
                   <YAxis
-                    domain={[-6, 6]}
+                    domain={[-11, 8]}
                     tick={{ fontSize: 12, fill: "#64748b" }}
                     axisLine={{ stroke: "#e2e8f0" }}
                     tickLine={{ stroke: "#e2e8f0" }}
@@ -464,7 +472,7 @@ const RecoveryRouteFrontend: React.FC = () => {
 
                   {expandedSegment === index && (
                     <div className="px-6 pb-6 border-t border-slate-100">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-6">
                         <div>
                           <h4 className="font-semibold text-slate-900 mb-3">기간 정보</h4>
                           <div className="space-y-2 text-sm">
@@ -486,11 +494,57 @@ const RecoveryRouteFrontend: React.FC = () => {
                             </div>
                           </div>
                         </div>
-                        <div>
-                          <h4 className="font-semibold text-slate-900 mb-3">관련 일기</h4>
-                          <p className="text-sm text-slate-600">
-                            {segment.diary_ids?.length || 0}개의 일기가 이 회복 과정에 포함되었습니다.
-                          </p>
+                        <div className="lg:col-span-2">
+                          <h4 className="font-semibold text-slate-900 mb-3">
+                            관련 일기 ({segment.diary_ids?.length || 0}개)
+                          </h4>
+                          <div className="space-y-3 max-h-64 overflow-y-auto">
+                            {segment.diary_ids?.map((diaryId: number) => {
+                              const diary = recoveryData.timeline.find(
+                                (point: EmotionTimelinePoint) => point.diary_id === diaryId
+                              )
+                              if (!diary) return null
+
+                              return (
+                                <a
+                                  key={diaryId}
+                                  href={`/diary2/${diaryId}`}
+                                  className="block p-4 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors group"
+                                >
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center gap-2 mb-2">
+                                        <div
+                                          className="w-3 h-3 rounded-full flex-shrink-0"
+                                          style={{ backgroundColor: getEmotionColor(diary.primary_emotion) }}
+                                        ></div>
+                                        <span className="text-sm font-medium text-slate-900">
+                                          {diary.primary_emotion}
+                                        </span>
+                                        <span className="text-xs text-slate-500">
+                                          {new Date(diary.date).toLocaleDateString("ko-KR", {
+                                            month: "short",
+                                            day: "numeric"
+                                          })}
+                                        </span>
+                                      </div>
+                                      <p className="text-sm text-slate-600 line-clamp-2 leading-relaxed">
+                                        {diary.content_summary}
+                                      </p>
+                                    </div>
+                                    <div className="text-slate-400 group-hover:text-slate-600 transition-colors">
+                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </a>
+                              )
+                            })}
+                          </div>
+                          {segment.diary_ids && segment.diary_ids.length === 0 && (
+                            <p className="text-sm text-slate-500 italic">관련 일기가 없습니다.</p>
+                          )}
                         </div>
                       </div>
                     </div>
